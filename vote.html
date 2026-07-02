@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Clear Voting Seal — Voting & Verification</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="clear.css">
+</head>
+<body>
+
+<header class="cvs-header">
+  <h1>Clear Voting Seal — Voting & Verification</h1>
+  <div class="cvs-sub">Unified lineage: one election, separated views. This page handles accounts, ballots, and verification.</div>
+  <div class="cvs-small"><a href="index.html">← Back to Turnout Viewer</a></div>
+</header>
+
+<main class="cvs-main">
+  <section class="cvs-card" id="loginCard">
+    <h2>Login</h2>
+    <label>Username
+      <input id="loginUser" type="text">
+    </label>
+    <label>Password
+      <input id="loginPass" type="password">
+    </label>
+    <button id="loginBtn">Login</button>
+    <div id="loginStatus" class="cvs-status"></div>
+  </section>
+
+  <section class="cvs-card hidden" id="mfaCard">
+    <h2>Two-Factor Authentication</h2>
+    <label>Enter 6-digit code
+      <input id="mfaCode" type="text" inputmode="numeric" maxlength="6">
+    </label>
+    <button id="mfaBtn">Verify</button>
+    <div id="mfaStatus" class="cvs-status"></div>
+  </section>
+
+  <section class="cvs-card hidden" id="tokenCard">
+    <h2>Request Voting Token</h2>
+    <label>Election
+      <select id="electionSelect">
+        <option value="2026-FL-GEN">2026 Florida General</option>
+      </select>
+    </label>
+    <button id="tokenBtn">Request Token</button>
+    <div id="tokenStatus" class="cvs-status"></div>
+  </section>
+
+  <section class="cvs-card hidden" id="ballotCard">
+    <h2>Ballot</h2>
+    <label>District
+      <input id="districtId" type="text">
+    </label>
+    <label>Your Choice
+      <select id="choiceSelect">
+        <option value="A">Candidate A</option>
+        <option value="B">Candidate B</option>
+        <option value="C">Candidate C</option>
+      </select>
+    </label>
+    <button id="submitBallotBtn">Submit Ballot</button>
+    <div id="ballotStatus" class="cvs-status"></div>
+  </section>
+
+  <section class="cvs-card">
+    <h2>Verify Your Ballot</h2>
+    <label>Ballot ID
+      <input id="verifyId" type="text">
+    </label>
+    <button id="verifyBtn">Check</button>
+    <div id="verifyResult" class="cvs-status"></div>
+  </section>
+</main>
+
+<script src="api.js"></script>
+<script src="auth.js"></script>
+
+</body>
+</html>
