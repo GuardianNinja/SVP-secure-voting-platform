@@ -7,14 +7,19 @@ A demo secure digital voting concept with static frontend flows for login, 2FA, 
 - `index.html` — portal landing page
 - `vote.html` — voting and ballot verification flow
 - `totp.html` — TOTP enrollment flow
+- `observer.html` — public observer portal for chain head, recent entries, and ballot lookup
 
 ## Supporting files
 
 - `auth.js` — login/MFA UI state handling with session persistence
 - `api.js` — fetch wrappers for the expected backend API
+- `observer.js` — observer page interactions
 - `clear.css` — shared Clear Voting Seal styling
 - `schema.sql` — example SQL schema for voters, tokens, ballots, and audit events
 - `main.py` — FastAPI backend with matching `/api` handlers used by the frontend
+- `arkchain/` — ArkChain node service scaffold
+- `k8s/` — baseline Kubernetes manifests
+- `docker-compose.yml` — local multi-service stack scaffold (API, ArkChain, Postgres, Redis)
 
 ## Backend quick start
 
@@ -24,6 +29,15 @@ A demo secure digital voting concept with static frontend flows for login, 2FA, 
    - `uvicorn main:app --reload`
 3. Open:
    - `http://127.0.0.1:8000/index.html`
+4. Optional observer page:
+   - `http://127.0.0.1:8000/observer.html`
+
+## Containerized scaffold quick start
+
+1. Copy env defaults:
+   - `cp .env.example .env`
+2. Start stack:
+   - `docker compose up --build`
 
 ## Demo account
 

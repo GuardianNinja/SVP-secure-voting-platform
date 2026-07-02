@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Clear Voting Seal — Observer Portal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="clear.css">
+</head>
+<body>
+<header class="cvs-header">
+  <h1>Clear Voting Seal — Observer Portal</h1>
+  <div class="cvs-sub">Public, read-only election transparency view.</div>
+  <div class="cvs-small"><a href="index.html">← Back to Portal</a></div>
+</header>
+
+<main class="cvs-main">
+  <section class="cvs-card">
+    <h2>Election</h2>
+    <label>Election
+      <select id="observerElectionSelect">
+        <option value="2026-FL-GEN">2026 Florida General</option>
+      </select>
+    </label>
+    <button id="observerRefreshBtn">Refresh</button>
+    <div id="observerStatus" class="cvs-status"></div>
+  </section>
+
+  <section class="cvs-card">
+    <h2>Ballot Receipt Lookup</h2>
+    <label>Ballot ID
+      <input id="observerBallotId" type="text">
+    </label>
+    <button id="observerLookupBtn">Lookup</button>
+    <pre id="observerLookupResult" class="cvs-pre"></pre>
+  </section>
+
+  <section class="cvs-card">
+    <h2>Chain Head</h2>
+    <pre id="observerChainHead" class="cvs-pre"></pre>
+  </section>
+
+  <section class="cvs-card">
+    <h2>Recent Entries</h2>
+    <pre id="observerEntries" class="cvs-pre"></pre>
+  </section>
+</main>
+
+<script src="api.js"></script>
+<script src="observer.js"></script>
+</body>
+</html>
+

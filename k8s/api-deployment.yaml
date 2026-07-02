@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: svp-api
+  namespace: ballot
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: svp-api
+  template:
+    metadata:
+      labels:
+        app: svp-api
+    spec:
+      containers:
+        - name: api
+          image: ghcr.io/guardianninja/svp-api:latest
+          ports:
+            - containerPort: 8000
+          readinessProbe:
+            httpGet:
+              path: /index.html
+              port: 8000
+            initialDelaySeconds: 3
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: svp-api
+  namespace: ballot
+spec:
+  selector:
+    app: svp-api
+  ports:
+    - port: 80
+      targetPort: 8000
+

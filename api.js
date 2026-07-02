@@ -60,3 +60,15 @@ async function apiVerifyBallot(ballotId) {
     method: "GET"
   });
 }
+
+async function apiGetObserverChainHead(electionId) {
+  return apiRequest(`/arkchain/chain/head?electionId=${encodeURIComponent(electionId)}`, {
+    method: "GET"
+  });
+}
+
+async function apiGetObserverEntries(electionId, limit = 10) {
+  return apiRequest(`/arkchain/entries?electionId=${encodeURIComponent(electionId)}&limit=${encodeURIComponent(limit)}`, {
+    method: "GET"
+  });
+}

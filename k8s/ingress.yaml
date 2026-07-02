@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: svp-ingress
+  namespace: ballot
+spec:
+  rules:
+    - host: svp.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: svp-api
+                port:
+                  number: 80
+
