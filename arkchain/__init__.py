@@ -1,0 +1,2 @@
+"""ArkChain service scaffold."""
+

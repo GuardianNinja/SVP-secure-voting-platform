@@ -95,6 +95,18 @@ button:hover {
   font-size: 13px;
 }
 
+.cvs-pre {
+  margin: 8px 0 0;
+  padding: 8px;
+  background: #f4f6fa;
+  border: 1px solid var(--cvs-border);
+  border-radius: 6px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 12px;
+  min-height: 36px;
+}
+
 .hidden {
   display: none;
 }

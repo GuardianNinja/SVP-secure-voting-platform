@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Any
 from uuid import uuid4
 
-from fastapi import FastAPI, Header, HTTPException, status
+from fastapi import FastAPI, Header, HTTPException, Query, status
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
@@ -241,6 +241,30 @@ def verify_ballot(ballot_id: str) -> dict[str, Any]:
         "electionId": ballot["electionId"],
         "timestamp": ballot["timestamp"],
     }
+
+
+@app.get("/api/arkchain/chain/head")
+def get_chain_head(electionId: str = Query(min_length=1, max_length=64)) -> dict[str, Any]:
+    return {
+        "electionId": electionId,
+        "chainHead": LAST_BALLOT_HASH_BY_ELECTION.get(electionId),
+        "ballotCount": sum(1 for b in BALLOTS.values() if b["electionId"] == electionId),
+        "hasData": electionId in LAST_BALLOT_HASH_BY_ELECTION,
+    }
+
+
+@app.get("/api/arkchain/entries")
+def get_chain_entries(
+    electionId: str = Query(min_length=1, max_length=64),
+    limit: int = Query(default=10, ge=1, le=100),
+) -> dict[str, Any]:
+    scoped_entries = []
+    for event in AUDIT_LOG:
+        payload = event.get("payload", {})
+        if payload.get("electionId") == electionId:
+            scoped_entries.append(event)
+    recent = list(reversed(scoped_entries[-limit:]))
+    return {"electionId": electionId, "entries": recent, "count": len(recent)}
 
 
 @app.post("/api/auth/totp/setup")

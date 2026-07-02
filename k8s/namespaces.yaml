@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: identity
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ballot
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: observer
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: arkchain
+
