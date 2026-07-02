@@ -19,10 +19,28 @@ BASE_DIR = Path(__file__).resolve().parent
 SESSION_TTL_SECONDS = 60 * 60
 MFA_PENDING_TTL_SECONDS = 5 * 60
 VOTING_TOKEN_TTL_SECONDS = 10 * 60
+PASSWORD_HASH_ITERATIONS = 200_000
 
 
 def _hash_password(password: str) -> str:
-    return hashlib.sha256(password.encode("utf-8")).hexdigest()
+    salt = secrets.token_bytes(16)
+    dk = hashlib.pbkdf2_hmac("sha256", password.encode("utf-8"), salt, PASSWORD_HASH_ITERATIONS)
+    return f"pbkdf2_sha256${PASSWORD_HASH_ITERATIONS}${salt.hex()}${dk.hex()}"
+
+
+def _verify_password(password: str, stored_hash: str) -> bool:
+    try:
+        scheme, iters_str, salt_hex, expected_hex = stored_hash.split("$", 3)
+        if scheme != "pbkdf2_sha256":
+            return False
+        iterations = int(iters_str)
+        salt = bytes.fromhex(salt_hex)
+        expected = bytes.fromhex(expected_hex)
+    except (ValueError, TypeError):
+        return False
+
+    candidate = hashlib.pbkdf2_hmac("sha256", password.encode("utf-8"), salt, iterations)
+    return hmac.compare_digest(candidate, expected)
 
 
 def _b32_decode(secret: str) -> bytes:
@@ -131,7 +149,7 @@ def auth_login(body: LoginRequest) -> dict[str, Any]:
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
 
-    if not hmac.compare_digest(user["passwordHash"], _hash_password(body.password)):
+    if not _verify_password(body.password, user["passwordHash"]):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
 
     if user["mfaEnabled"]:
