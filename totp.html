@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Clear Voting Seal — 2FA Setup</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="clear.css">
+</head>
+<body>
+<header class="cvs-header">
+  <h1>Clear Voting Seal — Two-Factor Setup</h1>
+  <div class="cvs-sub">Bind your account to a time-based code generator.</div>
+</header>
+
+<main class="cvs-main">
+  <section class="cvs-card">
+    <h2>Step 1 — Get your secret</h2>
+    <button id="setupBtn">Generate 2FA Secret</button>
+    <div id="setupStatus" class="cvs-status"></div>
+    <div id="secretBlock" class="cvs-small hidden">
+      <p><strong>Secret:</strong> <span id="secretText"></span></p>
+      <p>Scan the QR code or use the secret in your authenticator app.</p>
+      <p id="otpauthBlock" class="hidden">
+        <a id="otpauthLink" href="#" target="_blank" rel="noopener noreferrer">Open otpauth link</a>
+      </p>
+      <img id="qrImg" class="hidden" alt="QR code for TOTP" style="max-width: 200px;">
+    </div>
+  </section>
+
+  <section class="cvs-card">
+    <h2>Step 2 — Confirm</h2>
+    <label>Enter a 6-digit code from your app
+      <input id="confirmCode" type="text" inputmode="numeric" maxlength="6">
+    </label>
+    <button id="confirmBtn">Confirm 2FA</button>
+    <div id="confirmStatus" class="cvs-status"></div>
+  </section>
+</main>
+
+<script src="api.js"></script>
+<script>
+function show(id) {
+  document.getElementById(id).classList.remove("hidden");
+}
+
+function setText(id, text) {
+  document.getElementById(id).textContent = text;
+}
+
+async function setupTotp() {
+  setText("setupStatus", "Requesting secret...");
+  try {
+    const res = await apiRequest("/auth/totp/setup", { method: "POST" });
+    document.getElementById("secretText").textContent = res.secret;
+    const qrImg = document.getElementById("qrImg");
+    const otpauthBlock = document.getElementById("otpauthBlock");
+    const otpauthLink = document.getElementById("otpauthLink");
+    if (res.qrImageUrl) {
+      qrImg.src = res.qrImageUrl;
+      qrImg.classList.remove("hidden");
+    } else {
+      qrImg.removeAttribute("src");
+      qrImg.classList.add("hidden");
+    }
+    if (res.otpauthUrl) {
+      otpauthLink.href = res.otpauthUrl;
+      otpauthLink.textContent = res.otpauthUrl;
+      otpauthBlock.classList.remove("hidden");
+    } else {
+      otpauthLink.href = "#";
+      otpauthLink.textContent = "Open otpauth link";
+      otpauthBlock.classList.add("hidden");
+    }
+    show("secretBlock");
+    setText("setupStatus", "Secret generated. Scan the QR code in your app.");
+  } catch (e) {
+    setText("setupStatus", "Setup failed: " + e.message);
+  }
+}
+
+async function confirmTotp() {
+  const code = document.getElementById("confirmCode").value.trim();
+  if (!code) {
+    setText("confirmStatus", "Enter a code from your app.");
+    return;
+  }
+
+  setText("confirmStatus", "Confirming...");
+  try {
+    await apiRequest("/auth/totp/confirm", {
+      method: "POST",
+      body: JSON.stringify({ code }),
+      headers: { "Content-Type": "application/json" }
+    });
+    setText("confirmStatus", "Two-factor enabled for your account.");
+  } catch (e) {
+    setText("confirmStatus", "Confirmation failed: " + e.message);
+  }
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("setupBtn").addEventListener("click", setupTotp);
+  document.getElementById("confirmBtn").addEventListener("click", confirmTotp);
+});
+</script>
+</body>
+</html>
