@@ -1,0 +1,7 @@
+apiVersion: v2
+name: svp-secure-voting-platform
+description: Helm chart scaffold for SVP API and ArkChain services
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+

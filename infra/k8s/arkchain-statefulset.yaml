@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: arkchain
+spec:
+  serviceName: arkchain
+  replicas: 1
+  selector:
+    matchLabels:
+      app: arkchain
+  template:
+    metadata:
+      labels:
+        app: arkchain
+    spec:
+      containers:
+        - name: arkchain
+          image: ghcr.io/guardianninja/svp-arkchain:latest
+          ports:
+            - containerPort: 8100
+          volumeMounts:
+            - mountPath: /data
+              name: arkchain-data
+  volumeClaimTemplates:
+    - metadata:
+        name: arkchain-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 1Gi
+

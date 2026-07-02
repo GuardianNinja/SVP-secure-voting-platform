@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+  api:
+    build:
+      context: ../..
+      dockerfile: infra/docker/Dockerfile.api
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+      - redis
+
+  arkchain:
+    build:
+      context: ../..
+      dockerfile: infra/docker/Dockerfile.arkchain
+    ports:
+      - "8100:8100"
+
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: svp
+      POSTGRES_PASSWORD: svp
+      POSTGRES_DB: svp
+
+  redis:
+    image: redis:7
+

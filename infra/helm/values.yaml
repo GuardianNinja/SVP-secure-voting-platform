@@ -1,0 +1,8 @@
+image:
+  api: ghcr.io/guardianninja/svp-api:latest
+  arkchain: ghcr.io/guardianninja/svp-arkchain:latest
+
+replicaCount:
+  api: 2
+  arkchain: 1
+

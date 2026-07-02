@@ -1,47 +1,63 @@
 # SVP-secure-voting-platform
 
-A demo secure digital voting concept with static frontend flows for login, 2FA, token issuance, ballot submission, and ballot verification.
+SVP is a secure voting platform scaffold with multi-role portals, a core API, and an ArkChain append-only service.
 
-## Included pages
+## Repository structure
 
-- `index.html` — portal landing page
-- `vote.html` — voting and ballot verification flow
-- `totp.html` — TOTP enrollment flow
-- `observer.html` — public observer portal for chain head, recent entries, and ballot lookup
+```text
+backend/
+  api/
+  auth/
+  token/
+  ballot/
+  verify/
+  arkchain/
+    node/
+    consensus/
+    storage/
+    crypto/
+    keys/
+    homomorphic/
+    threshold/
+  common/
+    models/
+    utils/
+frontend/
+  voter/
+  admin/
+  observer/
+  trustee/
+infra/
+  docker/
+  k8s/
+  helm/
+docs/
+scripts/
+```
 
-## Supporting files
+## Current runnable demo
 
-- `auth.js` — login/MFA UI state handling with session persistence
-- `api.js` — fetch wrappers for the expected backend API
-- `observer.js` — observer page interactions
-- `clear.css` — shared Clear Voting Seal styling
-- `schema.sql` — example SQL schema for voters, tokens, ballots, and audit events
-- `main.py` — FastAPI backend with matching `/api` handlers used by the frontend
-- `arkchain/` — ArkChain node service scaffold
-- `k8s/` — baseline Kubernetes manifests
-- `docker-compose.yml` — local multi-service stack scaffold (API, ArkChain, Postgres, Redis)
+Legacy demo pages and API remain at the repository root for compatibility:
 
-## Backend quick start
+- `main.py`, `index.html`, `vote.html`, `totp.html`, `observer.html`
 
-1. Install dependencies:
-   - `pip install -r requirements.txt`
-2. Run the app:
-   - `uvicorn main:app --reload`
-3. Open:
-   - `http://127.0.0.1:8000/index.html`
-4. Optional observer page:
-   - `http://127.0.0.1:8000/observer.html`
+Run locally:
 
-## Containerized scaffold quick start
+1. `pip install -r requirements.txt`
+2. `uvicorn main:app --reload`
+3. Open `http://127.0.0.1:8000/index.html`
 
-1. Copy env defaults:
-   - `cp .env.example .env`
-2. Start stack:
-   - `docker compose up --build`
+## ArkChain service
 
-## Demo account
+ArkChain now exists as a separate service scaffold under:
 
-- Username: `demo`
-- Password: `demo123`
+- `backend/arkchain/node/models.py` (block and entry models)
+- `backend/arkchain/node/api.py` (append/read APIs)
+- `backend/arkchain/consensus/raft.py` (Raft scaffolding)
 
-If TOTP is enabled, login requires MFA verification using the code from `/api/auth/totp/setup`.
+## Infra and CI/CD
+
+- Docker: `infra/docker/`
+- Kubernetes: `infra/k8s/`
+- Helm: `infra/helm/`
+- GitHub Actions pipeline: `.github/workflows/ci.yml`
